@@ -2,9 +2,9 @@ package com.nc.jackson.annotations;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.InjectableValues;
+import com.fasterxml.jackson.databind.MappingIterator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
@@ -24,6 +24,12 @@ public class AnnotationsTest {
         deserializingUsingJsonInjectTest();
         deserializingUsingJsonAnySetter();
         deserializingUsingJsonSetter();
+        deserializingUsingJsonDeserialize();
+        serializingUsingJsonIgnoreProperties();
+        serializingUsingJsonIgnoreType();
+        serializingUsingJsonInclude();
+        serializingUsingJsonAutoDetect();
+        serializingPolimorphic();
     }
 
     private void extendableBeanTesting() throws JsonProcessingException {
@@ -95,5 +101,50 @@ public class AnnotationsTest {
         String json = "{\"id\":\"101\", \"name\":\"My bean 101\"}";
         MyBean bean = new ObjectMapper().readerFor(MyBean.class).readValue(json);
         log.info("id: " + bean.id + ", name: " + bean.getTheName());
+    }
+
+    private void deserializingUsingJsonDeserialize() throws IOException {
+        String json = "{\"name\":\"party\",\"eventDate\":\"20-12-2070 20:45:00\"}";
+
+        MappingIterator<Event> mi = new ObjectMapper().readerFor(Event.class).readValues(json);
+        Event event = mi.hasNextValue() ? mi.nextValue() : null;
+        log.info("event name: " + event.name + ", event date: " + event.eventDate);
+    }
+
+    private void serializingUsingJsonIgnoreProperties() throws JsonProcessingException {
+        BeanWithIgnore bean = new BeanWithIgnore(202, "My ignore bean", false);
+        String result = new ObjectMapper().writeValueAsString(bean);
+        log.info(result);
+    }
+
+    private void serializingUsingJsonIgnoreType() throws JsonProcessingException {
+        User.Name name = new User.Name("Foo", "Bar");
+        User user = new User(99, name);
+
+        String result = new ObjectMapper().writeValueAsString(user);
+        log.info(result);
+    }
+
+    private void serializingUsingJsonInclude() throws JsonProcessingException {
+        MyBean bean = new MyBean(444, null);
+        String result = new ObjectMapper().writeValueAsString(bean);
+        log.info(result);
+    }
+
+    private void serializingUsingJsonAutoDetect() throws JsonProcessingException {
+        PrivateBean bean = new PrivateBean(333, "My private bean 333");
+        String result = new ObjectMapper().writeValueAsString(bean);
+        log.info(result);
+    }
+
+    private void serializingPolimorphic() throws JsonProcessingException {
+        Zoo.Dog dog = new Zoo.Dog("lacy");
+        Zoo.Cat cat = new Zoo.Cat("zoe");
+        Zoo zoo = new Zoo();
+        zoo.addAnimal(dog);
+        zoo.addAnimal(cat);
+
+        String result = new ObjectMapper().writeValueAsString(zoo);
+        log.info(result);
     }
 }

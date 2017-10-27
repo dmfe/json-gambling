@@ -1,13 +1,18 @@
 package com.nc.jackson.annotations;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonSetter;
 
+import static com.fasterxml.jackson.annotation.JsonInclude.Include;
+
 /**
  * @JsonPropertyOrder annotation is used to specify the order of properties on serialization
+ * @JsonInclude is used to exclude properties with empty/null/default values.
  * */
 @JsonPropertyOrder({"name","id"})
+@JsonInclude(Include.NON_NULL)
 public class MyBean {
     public int id;
     private String name;
