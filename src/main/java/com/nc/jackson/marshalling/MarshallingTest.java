@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
-import java.util.Map;
 
 public class MarshallingTest {
     private static final Logger log = Logger.getLogger(MarshallingTest.class);
