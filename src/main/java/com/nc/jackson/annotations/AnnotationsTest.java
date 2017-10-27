@@ -22,6 +22,8 @@ public class AnnotationsTest {
         customSerializerTest();
         deserializingUsingCreatorTest();
         deserializingUsingJsonInjectTest();
+        deserializingUsingJsonAnySetter();
+        deserializingUsingJsonSetter();
     }
 
     private void extendableBeanTesting() throws JsonProcessingException {
@@ -78,5 +80,20 @@ public class AnnotationsTest {
         InjectableValues inject = new InjectableValues.Std().addValue(int.class, 10);
         BeanWithInject bean = new ObjectMapper().reader(inject).forType(BeanWithInject.class).readValue(json);
         log.info("id: " + bean.id + ", name: " + bean.name);
+    }
+
+    private void deserializingUsingJsonAnySetter() throws IOException {
+        String json = "{\"name\":\"My bean 2\"," +
+                      " \"key1\":\"value1\"," +
+                      " \"key2\":\"value2\"}";
+
+        ExtendableBean bean = new ObjectMapper().reader().forType(ExtendableBean.class).readValue(json);
+        log.info("name: " + bean.name + ", properties: " + bean.getProperties());
+    }
+
+    private void deserializingUsingJsonSetter() throws IOException {
+        String json = "{\"id\":\"101\", \"name\":\"My bean 101\"}";
+        MyBean bean = new ObjectMapper().readerFor(MyBean.class).readValue(json);
+        log.info("id: " + bean.id + ", name: " + bean.getTheName());
     }
 }

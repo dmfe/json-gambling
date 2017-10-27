@@ -1,6 +1,9 @@
 package com.nc.jackson.annotations;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
+import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -9,7 +12,8 @@ public class ExtendableBean {
     public String name;
     private Map<String, String> properties;
 
-    public ExtendableBean(String name) {
+    @JsonCreator
+    public ExtendableBean(@JsonProperty("name") String name) {
         this.name = name;
         properties = new HashMap<>();
     }
@@ -22,6 +26,10 @@ public class ExtendableBean {
         return properties;
     }
 
+    /**
+     * @JsonAnySetter allows you the flexibility of using a Map as a standard properties.
+     * */
+    @JsonAnySetter
     public void add(String key, String value) {
         properties.put(key, value);
     }
